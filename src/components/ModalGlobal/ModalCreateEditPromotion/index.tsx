@@ -18,9 +18,10 @@ import { PromotionValidation } from "@/utils/validation/promotion";
 interface ICreatePromotionBody {
   name: string;
   description: string;
-  startDate: Moment;
-  endDate: Moment;
+  start_date: Moment;
+  end_date: Moment;
   discount: number;
+  quantity: number;
   file?: RcFile[];
 }
 
@@ -60,14 +61,15 @@ export default function ModalCreateEditPromotion({
     return {
       name: selectedPromotion?.name ?? "",
       description: selectedPromotion?.description ?? "",
-      startDate: selectedPromotion?.startDate
-        ? moment(selectedPromotion?.startDate)
+      start_date: selectedPromotion?.start_date
+        ? moment(selectedPromotion?.start_date)
         : moment(),
-      endDate: selectedPromotion?.startDate
-        ? moment(selectedPromotion?.endDate)
+      end_date: selectedPromotion?.start_date
+        ? moment(selectedPromotion?.end_date)
         : moment(),
       discount: selectedPromotion?.discount ?? 0,
       file: undefined,
+      quantity: selectedPromotion?.discount ?? 1,
     };
   }, [selectedPromotion]);
 
@@ -81,8 +83,8 @@ export default function ModalCreateEditPromotion({
   const handleSubmit = async (values: ICreatePromotionBody) => {
     const newValues = {
       ...values,
-      startDate: moment(values.startDate).format("YYYY-MM-DD"),
-      endDate: moment(values.endDate).format("YYYY-MM-DD"),
+      start_date: moment(values.start_date).format("YYYY-MM-DD"),
+      end_date: moment(values.end_date).format("YYYY-MM-DD"),
     };
     const formData = new FormData();
     Object.entries(newValues).forEach(([key, value]) => {
@@ -151,16 +153,17 @@ export default function ModalCreateEditPromotion({
                     />
                   </FormItemGlobal>
                   <FormItemGlobal
-                    name="startDate"
+                    name="start_date"
                     label="Ngày bắt đầu"
                     required
                   >
                     <DatePickerFormikGlobal
-                      name="startDate"
+                      name="start_date"
                       placeholder="Ngày bắt đầu"
                       allowClear={false}
                       disabledDate={(d) =>
-                        d <= moment().subtract(1, "days") || d >= values.endDate
+                        d <= moment().subtract(1, "days") ||
+                        d >= values.end_date
                       }
                     />
                   </FormItemGlobal>
@@ -176,12 +179,23 @@ export default function ModalCreateEditPromotion({
                   <FormItemGlobal name="description" label="Mô tả">
                     <InputFormikGlobal name="description" placeholder="Mô tả" />
                   </FormItemGlobal>
-                  <FormItemGlobal name="endDate" label="Ngày kết thúc" required>
+                  <FormItemGlobal
+                    name="end_date"
+                    label="Ngày kết thúc"
+                    required
+                  >
                     <DatePickerFormikGlobal
-                      name="endDate"
+                      name="end_date"
                       placeholder="Ngày kết thúc"
                       allowClear={false}
-                      disabledDate={(d) => d <= values.startDate}
+                      disabledDate={(d) => d <= values.start_date}
+                    />
+                  </FormItemGlobal>
+                  <FormItemGlobal name="quantity" label="Quantity" required>
+                    <InputNumberFormikGlobal
+                      name="quantity"
+                      placeholder="Quantity"
+                      min={1}
                     />
                   </FormItemGlobal>
                 </Col>

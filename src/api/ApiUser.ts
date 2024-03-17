@@ -11,7 +11,7 @@ export interface ILoginRes {
   name?: string;
   address?: string;
   phoneNumber?: string;
-  role?: "ROLE_ADMIN" | "ROLE_RECEPTIONIST" | "ROLE_MANAGE" | "ROLE_ACCOUNTANT";
+  role?: "ROLE_ADMIN" | "ROLE_RECEPTIONIST" | "ROLE_ACCOUNTANT";
   accessToken?: string;
   active?: true;
   avatar?: string;

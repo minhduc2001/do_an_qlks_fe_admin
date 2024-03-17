@@ -15,11 +15,7 @@ const PromotionManagement = React.lazy(
 );
 const Statistic = React.lazy(() => import("@/pages/statistic"));
 
-export type TROLE =
-  | "ROLE_ADMIN"
-  | "ROLE_RECEPTIONIST"
-  | "ROLE_MANAGE"
-  | "ROLE_ACCOUNTANT";
+export type TROLE = "ROLE_ADMIN" | "ROLE_RECEPTIONIST" | "ROLE_ACCOUNTANT";
 
 export const groupPermission1: TROLE[] = ["ROLE_ADMIN", "ROLE_RECEPTIONIST"];
 

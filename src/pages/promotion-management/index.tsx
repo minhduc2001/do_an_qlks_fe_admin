@@ -68,12 +68,12 @@ export default function PromotionManagement() {
     },
     {
       title: "Ngày bắt đầu",
-      dataIndex: "startDate",
+      dataIndex: "start_date",
       align: "center",
     },
     {
       title: "Ngày kết thúc",
-      dataIndex: "endDate",
+      dataIndex: "end_date",
       align: "center",
     },
     {
@@ -82,7 +82,7 @@ export default function PromotionManagement() {
       width: 100,
       fixed: "right",
       render: (_, record) =>
-        checkPermission(groupPermission1, store.getState().user.roles) && (
+        checkPermission(groupPermission1, [store.getState().user.role]) && (
           <span
             className="p-2 cursor-pointer"
             role="presentation"
@@ -109,7 +109,7 @@ export default function PromotionManagement() {
             placeholder="Nhập tên khuyến mại"
           />
         </Space>
-        {checkPermission(groupPermission1, store.getState().user.roles) && (
+        {checkPermission(groupPermission1, [store.getState().user.role]) && (
           <Space>
             <ButtonGlobal
               title="Thêm khyến mại"

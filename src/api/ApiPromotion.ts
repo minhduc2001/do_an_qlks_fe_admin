@@ -13,9 +13,10 @@ export interface IPromotionRes {
   description: string;
   image: string;
   slug: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
   discount: number;
+  quantity: number;
 }
 
 export interface IGetPromotionsRes {
@@ -31,19 +32,19 @@ export interface IGetPromotionsRes {
 const getPromotions = (
   params?: IGetPromotionsParams
 ): Promise<IGetPromotionsRes> => {
-  return fetcher({ method: "get", url: "/promotion/list", params });
+  return fetcher({ method: "get", url: "/promotion", params });
 };
 
 const createPromotion = (data: FormData) => {
   return fetcher(
-    { method: "post", url: "/promotion/save", data },
+    { method: "post", url: "/promotion", data },
     { isFormData: true }
   );
 };
 
 const updatePromotion = (data: FormData) => {
   return fetcher(
-    { method: "put", url: "/promotion/update", data },
+    { method: "put", url: "/promotion", data },
     { isFormData: true }
   );
 };
