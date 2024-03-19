@@ -32,7 +32,7 @@ export default function ModalUpdateRoomName({
   const initialValues: IInitialValues = useMemo(() => {
     return {
       roomName:
-        selectedRoom.roomNames?.map((item) => ({
+        selectedRoom.rooms?.map((item) => ({
           name: item.name,
           id: item.id,
         })) ?? [],
@@ -54,7 +54,7 @@ export default function ModalUpdateRoomName({
           queryClient.refetchQueries(["get_rooms"]);
           onCancel();
         },
-      },
+      }
     );
   };
 

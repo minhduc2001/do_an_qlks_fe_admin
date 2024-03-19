@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { Button } from "antd";
 
 interface IButtonGlobalProps {
-  title: ReactNode;
+  title?: ReactNode;
   preIcon?: ReactNode;
   color?: string;
   onClick?: () => void;

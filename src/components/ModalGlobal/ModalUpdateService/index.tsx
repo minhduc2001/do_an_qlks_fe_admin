@@ -20,7 +20,7 @@ interface IModalUpdateService {
 }
 
 interface IInitialValues {
-  service_quantity: { idService?: string; quantity?: number }[];
+  service_quantity: { service_id?: number; quantity?: number }[];
 }
 
 export default function ModalUpdateService({
@@ -38,7 +38,7 @@ export default function ModalUpdateService({
   }, [selectedBooking]);
 
   const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices(),
+    ApiService.getServices()
   );
   const convertServicesValue = useMemo(() => {
     return services?.results.map((item) => ({
@@ -62,7 +62,7 @@ export default function ModalUpdateService({
           queryClient.refetchQueries(["get_bookings"]);
           onCancel();
         },
-      },
+      }
     );
   };
 
@@ -93,7 +93,7 @@ export default function ModalUpdateService({
                         className="px-2 py-[1px] text-white bg-blue-600"
                         type="button"
                         onClick={() =>
-                          push({ idService: undefined, quantity: 1 })
+                          push({ service_id: undefined, quantity: 1 })
                         }
                       >
                         +
@@ -107,7 +107,7 @@ export default function ModalUpdateService({
                       >
                         <Space>
                           <SelectFormikGlobal
-                            name={`service_quantity.${index}.idService`}
+                            name={`service_quantity.${index}.service_id`}
                             allowClear={false}
                             options={convertServicesValue}
                           />

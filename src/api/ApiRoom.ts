@@ -17,6 +17,7 @@ export interface IRoomRes {
   images?: string[];
   feature_rooms?: IRoomFeatureRes[];
   rooms?: IRoomName[];
+  type_room: any;
 }
 
 export interface IGetRoomsRes {
@@ -27,6 +28,17 @@ export interface IGetRoomsRes {
     totalItems: number;
   };
   results: IRoomRes[];
+}
+
+export interface ICheckTypeRes {
+  type_room: any;
+  c: number;
+}
+
+export interface ICheckTypeRoom {
+  check_in: Date;
+  check_out: Date;
+  id?: number;
 }
 
 interface IUpdateRoomNameBody {
@@ -60,10 +72,14 @@ const updateRoom = (data: {
 
 const updateRoomName = (data: IUpdateRoomNameBody): Promise<IGetRoomsRes> => {
   return fetcher({
-    method: "post",
-    url: "/room/save-room-name/" + data.id,
-    data: data.body,
+    method: "put",
+    url: `/room/${data.id}/add-room-name`,
+    data: { room_names: data.body },
   });
+};
+
+const checkTypeRoom = (data: ICheckTypeRoom): Promise<ICheckTypeRes[]> => {
+  return fetcher({ method: "post", url: "booking/check", data });
 };
 
 export default {
@@ -72,4 +88,5 @@ export default {
   createRoom,
   updateRoom,
   updateRoomName,
+  checkTypeRoom,
 };

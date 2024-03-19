@@ -1,3 +1,4 @@
+import { EGender } from "./ApiUser";
 import { fetcher } from "./Fetcher";
 
 export interface IGetCustomersParams {
@@ -9,13 +10,11 @@ export interface IGetCustomersParams {
 
 export interface ICustomerRes {
   id: string;
-  firstName: string;
-  lastName: string;
-  name: string;
+  username: string;
   address: string;
-  sex: string;
+  gender: EGender;
   email: string;
-  tel: string;
+  phone: string;
   note: string;
   cccd: string;
 }

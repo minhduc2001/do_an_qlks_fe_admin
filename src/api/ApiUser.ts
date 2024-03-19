@@ -1,6 +1,12 @@
 import store from "@/redux/store";
 import { fetcher } from "./Fetcher";
 
+export enum EGender {
+  Male,
+  Female,
+  Other,
+}
+
 export interface ILoginBody {
   email: string;
   password: string;
@@ -8,13 +14,14 @@ export interface ILoginBody {
 
 export interface ILoginRes {
   email?: string;
-  name?: string;
+  username?: string;
   address?: string;
-  phoneNumber?: string;
+  phone?: string;
   role?: "ROLE_ADMIN" | "ROLE_RECEPTIONIST" | "ROLE_ACCOUNTANT";
   accessToken?: string;
   active?: true;
   avatar?: string;
+  cccd?: string;
 }
 
 function login(data: ILoginBody): Promise<ILoginRes> {
@@ -33,7 +40,12 @@ function isLogin(): boolean {
   return !!getAuthToken();
 }
 
+function checkMail(data: any): Promise<ILoginRes[]> {
+  return fetcher({ url: "customer/mail", method: "post", data });
+}
+
 export default {
   login,
   isLogin,
+  checkMail,
 };

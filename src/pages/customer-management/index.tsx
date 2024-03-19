@@ -2,6 +2,7 @@ import ApiCustomer, {
   ICustomerRes,
   IGetCustomersParams,
 } from "@/api/ApiCustomer";
+import { EGender } from "@/api/ApiUser";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
 import TableGlobal, {
   IChangeTable,
@@ -43,7 +44,7 @@ export default function RoomManagement() {
     },
     {
       title: "Tên khách hàng",
-      dataIndex: "name",
+      dataIndex: "username",
       align: "center",
     },
     {
@@ -63,9 +64,9 @@ export default function RoomManagement() {
     },
     {
       title: "Giới tính",
-      dataIndex: "sex",
+      dataIndex: "gender",
       align: "center",
-      render: (value) => (value === "male" ? "Nam" : "Nữ"),
+      render: (value) => (value === EGender.Male ? "Nam" : "Nữ"),
     },
     {
       title: "Địa chỉ",

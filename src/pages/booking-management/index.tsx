@@ -1,4 +1,5 @@
 import ApiBookRoom, {
+  EBookingState,
   IBookingRes,
   IGetBookingsParams,
 } from "@/api/ApiBookRoom";
@@ -19,7 +20,7 @@ import {
   LoginOutlined,
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Popover, Row, Space, Tooltip } from "antd";
+import { Col, Popover, Row, Space, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
@@ -43,17 +44,15 @@ export default function RoomManagement() {
     }
   );
 
-  const renderBookingState = (
-    state: "Init" | "AdminInit" | "Success" | "Done" | "Reject"
-  ) => {
+  const renderBookingState = (state: EBookingState) => {
     switch (state) {
-      case "AdminInit":
+      case EBookingState.AdminInit:
         return "Đặt phòng trực tiếp";
-      case "Done":
+      case EBookingState.Done:
         return "Check out";
-      case "Reject":
+      case EBookingState.Reject:
         return "Hủy đặt phòng";
-      case "Success":
+      case EBookingState.Success:
         return "Đặt phòng qua web (Đã thanh toán)";
       default:
         return "Đặt phòng qua web";
@@ -103,32 +102,63 @@ export default function RoomManagement() {
     });
   };
 
+  // {
+  //   title: "Dịch vụ sử dụng",
+  //   dataIndex: "state",
+  //   align: "center",
+  //   render: (_, record) => (
+  //     <ul>
+  //       {record.used_services?.map((item) => (
+  //         <li>
+  //           <Popover
+  //             title={
+  //               <ul>
+  //                 <li>
+  //                   Ngày đặt: {moment(item.createdAt).format("YYYY-MM-DD")}
+  //                 </li>
+  //                 <li>Số lượng: {item.quantity}</li>
+  //                 <li>
+  //                   Đơn giá: {item.service?.price?.toLocaleString() + " vnđ"}
+  //                 </li>
+  //               </ul>
+  //             }
+  //           >
+  //             {item.name}
+  //           </Popover>
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   ),
+  // },
+
   const columns: ColumnsType<IBookingRes> = [
     {
       title: "STT",
       align: "center",
       render: (_, __, i) => i + 1,
+      width: 50,
     },
     {
-      title: "Tên phòng",
-      dataIndex: ["room", "name"],
+      title: "Loại phòng",
+      dataIndex: ["room"],
       align: "center",
+      render: (_, record) => {
+        return record?.booked_rooms?.[0].room?.type_room.name;
+      },
     },
     {
       title: "Tên khách hàng",
-      dataIndex: ["client", "name"],
+      dataIndex: ["customer", "username"],
       align: "center",
-      render: (_, record) =>
-        `${record.client?.lastName} ${record.client?.firstName}`,
     },
     {
       title: "email",
-      dataIndex: ["client", "email"],
+      dataIndex: ["customer", "email"],
       align: "center",
     },
     {
       title: "Số điện thoại",
-      dataIndex: ["client", "tel"],
+      dataIndex: ["customer", "phone"],
       align: "center",
     },
     {
@@ -143,35 +173,9 @@ export default function RoomManagement() {
     },
     {
       title: "Trạng thái",
-      dataIndex: "bookingState",
+      dataIndex: "state",
       align: "center",
       render: (value) => renderBookingState(value),
-    },
-    {
-      title: "Dịch vu sử dụng",
-      dataIndex: "bookingState",
-      align: "center",
-      render: (_, record) => (
-        <ul>
-          {record.usedServices?.map((item) => (
-            <li>
-              <Popover
-                title={
-                  <ul>
-                    <li>
-                      Ngày đặt: {moment(item.createdAt).format("YYYY-MM-DD")}
-                    </li>
-                    <li>Số lượng: {item.quantity}</li>
-                    <li>Đơn giá: {item.price?.toLocaleString() + " vnđ"}</li>
-                  </ul>
-                }
-              >
-                {item.name}
-              </Popover>
-            </li>
-          ))}
-        </ul>
-      ),
     },
     {
       title: "Hành động",
@@ -196,7 +200,7 @@ export default function RoomManagement() {
             <Tooltip title="Check-in" placement="topLeft">
               <span
                 className="p-2 cursor-pointer"
-                style={{ color: record.checkedIn ? "#49CC90" : undefined }}
+                style={{ color: record.is_checked_in ? "#49CC90" : undefined }}
                 role="presentation"
                 onClick={() => {
                   handleCheckIn(record.id);
@@ -209,7 +213,8 @@ export default function RoomManagement() {
               <span
                 className="p-2 cursor-pointer"
                 style={{
-                  color: record.bookingState === "Done" ? "#49CC90" : undefined,
+                  color:
+                    record.state === EBookingState.Done ? "#49CC90" : undefined,
                 }}
                 role="presentation"
                 onClick={() => {
@@ -223,7 +228,8 @@ export default function RoomManagement() {
               <span
                 className="p-2 cursor-pointer"
                 style={{
-                  color: record.bookingState === "Reject" ? "red" : undefined,
+                  color:
+                    record.state === EBookingState.Reject ? "red" : undefined,
                 }}
                 role="presentation"
                 onClick={() => {
@@ -246,6 +252,52 @@ export default function RoomManagement() {
             </Tooltip>
           </Space>
         ),
+    },
+  ];
+
+  const columns2: ColumnsType<any> = [
+    {
+      title: "STT",
+      align: "center",
+      render: (_, __, i) => i + 1,
+      width: 100,
+    },
+    {
+      title: "Phòng",
+      dataIndex: ["room", "name"],
+      align: "center",
+    },
+  ];
+
+  const columns1: ColumnsType<any> = [
+    {
+      title: "STT",
+      align: "center",
+      render: (_, __, i) => i + 1,
+      width: 50,
+    },
+    {
+      title: "Tên dịch vụ",
+      dataIndex: ["name"],
+      align: "center",
+    },
+
+    {
+      title: "Đơn giá",
+      dataIndex: ["price"],
+      align: "center",
+    },
+
+    {
+      title: "Số lượng",
+      dataIndex: ["quantity"],
+      align: "center",
+    },
+
+    {
+      title: "Ngày sử dụng",
+      dataIndex: ["createAt"],
+      align: "center",
     },
   ];
 
@@ -274,6 +326,35 @@ export default function RoomManagement() {
         columns={columns}
         onChangeTable={handleChangeTable}
         scrollX={1300}
+        expandable={{
+          expandedRowRender: (record) => (
+            <Row gutter={[0, 33]}>
+              <Col span={24}>
+                <TableGlobal
+                  columns={columns1}
+                  dataSource={record.used_services}
+                  pagination={false}
+                ></TableGlobal>
+              </Col>
+
+              <Col span={24}>
+                <Row gutter={66}>
+                  <Col span={12}>
+                    <TableGlobal
+                      columns={columns2}
+                      dataSource={record.booked_rooms}
+                      pagination={false}
+                      scrollX={500}
+                    ></TableGlobal>
+                  </Col>
+                  <Col span={12}>
+                    <></>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          ),
+        }}
       />
       <ModalCreateBooking
         isOpenModal={isOpenModal === "bookRoom"}
