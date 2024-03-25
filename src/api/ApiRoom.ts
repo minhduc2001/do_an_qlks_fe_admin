@@ -18,6 +18,12 @@ export interface IRoomRes {
   feature_rooms?: IRoomFeatureRes[];
   rooms?: IRoomName[];
   type_room: any;
+  parent?: number;
+  contains?: number;
+  area?: number;
+  type_bed?: string;
+  checkin?: string;
+  checkout?: string;
 }
 
 export interface IGetRoomsRes {
@@ -52,7 +58,7 @@ const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {
 
 const getRoomsWithRelation = (
   params?: IGetRoomsParams
-): Promise<IGetRoomsRes> => {
+): Promise<IRoomRes[]> => {
   return fetcher({ method: "get", url: "/room/with-relation", params });
 };
 

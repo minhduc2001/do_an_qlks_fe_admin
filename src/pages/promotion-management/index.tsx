@@ -9,12 +9,17 @@ import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
-import { checkPermission, groupPermission1 } from "@/lazyLoading";
+import {
+  checkPermission,
+  groupPermission1,
+  groupPermission2,
+} from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
 import { ColumnsType } from "antd/lib/table";
+import moment from "moment";
 import { useState } from "react";
 
 export default function PromotionManagement() {
@@ -70,11 +75,13 @@ export default function PromotionManagement() {
       title: "Ngày bắt đầu",
       dataIndex: "start_date",
       align: "center",
+      render: (value) => moment(value).format("DD-MM-YYYY"),
     },
     {
       title: "Ngày kết thúc",
       dataIndex: "end_date",
       align: "center",
+      render: (value) => moment(value).format("DD-MM-YYYY"),
     },
     {
       title: "Hành động",
@@ -82,7 +89,7 @@ export default function PromotionManagement() {
       width: 100,
       fixed: "right",
       render: (_, record) =>
-        checkPermission(groupPermission1, [store.getState().user.role]) && (
+        checkPermission(groupPermission2, [store.getState().user.role]) && (
           <span
             className="p-2 cursor-pointer"
             role="presentation"
@@ -109,7 +116,7 @@ export default function PromotionManagement() {
             placeholder="Nhập tên khuyến mại"
           />
         </Space>
-        {checkPermission(groupPermission1, [store.getState().user.role]) && (
+        {checkPermission(groupPermission2, [store.getState().user.role]) && (
           <Space>
             <ButtonGlobal
               title="Thêm khyến mại"

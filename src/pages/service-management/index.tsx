@@ -6,7 +6,11 @@ import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
-import { checkPermission, groupPermission1 } from "@/lazyLoading";
+import {
+  checkPermission,
+  groupPermission1,
+  groupPermission2,
+} from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
@@ -76,7 +80,7 @@ export default function RoomManagement() {
       width: 100,
       fixed: "right",
       render: (_, record) =>
-        checkPermission(groupPermission1, [store.getState().user.role]) && (
+        checkPermission(groupPermission2, [store.getState().user.role]) && (
           <span
             className="p-2 cursor-pointer"
             role="presentation"
@@ -103,7 +107,7 @@ export default function RoomManagement() {
             placeholder="Nhập tên dịch vụ"
           />
         </Space>
-        {checkPermission(groupPermission1, [store.getState().user.role]) && (
+        {checkPermission(groupPermission2, [store.getState().user.role]) && (
           <Space>
             <ButtonGlobal
               title="Thêm dịch vụ"

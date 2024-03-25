@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { Formik, FormikProps } from "formik";
-import { Col, Divider, Empty, Form, Input, Row, Space, Tooltip } from "antd";
+import { Col, Divider, Row, Space, Tooltip } from "antd";
 import ModalGlobal from "..";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Notification from "@/components/Notification";
@@ -82,8 +82,6 @@ export default function ModalCreateBooking({
   };
 
   const calculateNight = (sd: Moment, ed: Moment) => {
-    console.log(innerRef.current?.values);
-
     const roomPrice =
       rooms?.results.find(
         (item) =>
@@ -115,8 +113,6 @@ export default function ModalCreateBooking({
       },
     });
   };
-
-  const handleClick = (data: any) => {};
 
   const handleSearch = (email?: string) => {
     if (email) checkMail.mutate({ email });
@@ -321,6 +317,19 @@ export default function ModalCreateBooking({
                           ]}
                         />
                       </FormItemGlobal>
+
+                      <FormItemGlobal
+                        name="quantity"
+                        label="Số lượng phòng"
+                        required
+                      >
+                        <InputNumberFormikGlobal
+                          name="quantity"
+                          placeholder="Số lượng phòng"
+                          min={1}
+                        />
+                      </FormItemGlobal>
+
                       <FormItemGlobal
                         name="checkout"
                         label="Check-out"
@@ -334,17 +343,6 @@ export default function ModalCreateBooking({
                           onChange={(date) => {
                             setFieldValue("checkout", date?.startOf("day"));
                           }}
-                        />
-                      </FormItemGlobal>
-                      <FormItemGlobal
-                        name="quantity"
-                        label="Số lượng phòng"
-                        required
-                      >
-                        <InputNumberFormikGlobal
-                          name="quantity"
-                          placeholder="Số lượng phòng"
-                          min={1}
                         />
                       </FormItemGlobal>
                     </Col>

@@ -14,6 +14,7 @@ import FormGlobal, {
 } from "@/components/FormGlobal";
 import { RoomValidation } from "@/utils/validation/room";
 import ApiRoomFeature from "@/api/ApiRoomFeature";
+import moment from "moment";
 
 interface ICreateRomeBody {
   name: string;
@@ -58,14 +59,33 @@ export default function ModalCreateEditRoom({
     }
   }, [roomSelected]);
 
-  const initialValues: ICreateRomeBody = useMemo(() => {
-    return {
+  const initialValues = useMemo(() => {
+    const data = {
+      ...roomSelected,
       name: roomSelected?.name ?? "",
-      price: roomSelected?.price ?? 0,
+      price: roomSelected?.price ?? 1000,
       description: roomSelected?.description ?? "",
       feature_rooms: roomSelected?.feature_rooms?.map((item) => item.id) ?? [],
       files: [],
+      // area: roomSelected?.area ?? 10,
+      // contains: roomSelected?.contains ?? 1,
+      // parent: roomSelected?.parent ?? 1,
+      // checkin: roomSelected?.checkin ?? "12:00",
+      // checkout: roomSelected?.checkout ?? "17:00",
     };
+
+    delete data.id;
+
+    //@ts-ignore
+    delete data.createdAt;
+    //@ts-ignore
+    delete data.updatedAt;
+    //@ts-ignore
+    delete data.deletedAt;
+    delete data.slug;
+    delete data.rooms;
+
+    return data;
   }, [roomSelected]);
 
   const { data: roomFeatures } = useQuery(["get_room_features"], () =>
@@ -168,7 +188,7 @@ export default function ModalCreateEditRoom({
                     <InputNumberFormikGlobal
                       name="price"
                       placeholder="Giá phòng (vnđ)"
-                      min={0}
+                      min={1000}
                     />
                   </FormItemGlobal>
                 </Col>
@@ -182,6 +202,56 @@ export default function ModalCreateEditRoom({
                       mode="multiple"
                       placeholder="Tiện nghi"
                       options={convertRoomFeatures}
+                    />
+                  </FormItemGlobal>
+                </Col>
+              </Row>
+
+              <Row gutter={10}>
+                <Col span={24}>Thông tin khác</Col>
+
+                <Col span={8}>
+                  <FormItemGlobal name="parent" label="Người lớn" required>
+                    <InputNumberFormikGlobal
+                      name="parent"
+                      placeholder="Số lượng người lớn"
+                      min={1}
+                    />
+                  </FormItemGlobal>
+
+                  <FormItemGlobal name="contains" label="Sức chứa" required>
+                    <InputNumberFormikGlobal
+                      name="contains"
+                      placeholder="Chứa tối đa"
+                      min={1}
+                    />
+                  </FormItemGlobal>
+                </Col>
+                <Col span={8}>
+                  <FormItemGlobal name="area" label="Diện tích (m2)" required>
+                    <InputNumberFormikGlobal
+                      name="area"
+                      placeholder="Diện tích"
+                      min={1}
+                    />
+                  </FormItemGlobal>
+
+                  <FormItemGlobal name="type_bed" label="Loại giường" required>
+                    <InputFormikGlobal
+                      name="type_bed"
+                      placeholder="Loại giường"
+                    />
+                  </FormItemGlobal>
+                </Col>
+                <Col span={8}>
+                  <FormItemGlobal name="checkin" label="Checkin" required>
+                    <InputFormikGlobal name="checkin" placeholder="check in" />
+                  </FormItemGlobal>
+
+                  <FormItemGlobal name="checkout" label="Checkout" required>
+                    <InputFormikGlobal
+                      name="checkout"
+                      placeholder="Check out"
                     />
                   </FormItemGlobal>
                 </Col>

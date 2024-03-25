@@ -84,7 +84,9 @@ function Navbar() {
       </div>
       <Space>
         {isFetching + isMutating > 0 && (
-          <SyncOutlined className="text-2xl" spin />
+          <div className="h-[60px]">
+            <img src="/public/loading.svg" alt="" className="h-full" />
+          </div>
         )}
         <Dropdown menu={{ items: dropdownItems }}>
           <div className="cursor-pointer flex items-center gap-1">
@@ -99,7 +101,9 @@ function Navbar() {
               alt="user avatar"
               preview={false}
             />
-            <span>{user.name}</span>
+            <span className="mr-20">
+              Xin chào <strong>{user.username}!</strong>
+            </span>
           </div>
         </Dropdown>
       </Space>

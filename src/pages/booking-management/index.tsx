@@ -20,7 +20,7 @@ import {
   LoginOutlined,
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Col, Popover, Row, Space, Tooltip } from "antd";
+import { Col, Descriptions, Row, Space, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
@@ -190,8 +190,21 @@ export default function RoomManagement() {
                 className="p-2 cursor-pointer"
                 role="presentation"
                 onClick={() => {
-                  setSelectedBooking(record);
-                  setIsOpenModal("updateService");
+                  if (
+                    ![EBookingState.Done, EBookingState.Reject].includes(
+                      record.state
+                    )
+                  ) {
+                    setSelectedBooking(record);
+                    setIsOpenModal("updateService");
+                  }
+                }}
+                style={{
+                  cursor: [EBookingState.Done, EBookingState.Reject].includes(
+                    record.state
+                  )
+                    ? "not-allowed"
+                    : "pointer",
                 }}
               >
                 <EditOutlined />
@@ -200,10 +213,23 @@ export default function RoomManagement() {
             <Tooltip title="Check-in" placement="topLeft">
               <span
                 className="p-2 cursor-pointer"
-                style={{ color: record.is_checked_in ? "#49CC90" : undefined }}
+                style={{
+                  color: record.is_checked_in ? "#49CC90" : undefined,
+                  cursor:
+                    record.is_checked_in ||
+                    [EBookingState.Reject].includes(record.state)
+                      ? "not-allowed"
+                      : "pointer",
+                }}
                 role="presentation"
                 onClick={() => {
-                  handleCheckIn(record.id);
+                  if (
+                    !record.is_checked_in ||
+                    ![EBookingState.Reject, EBookingState.Done].includes(
+                      record.state
+                    )
+                  )
+                    handleCheckIn(record.id);
                 }}
               >
                 <CheckCircleOutlined />
@@ -211,14 +237,24 @@ export default function RoomManagement() {
             </Tooltip>
             <Tooltip title="Check-out" placement="topLeft">
               <span
-                className="p-2 cursor-pointer"
+                className="p-2"
                 style={{
                   color:
                     record.state === EBookingState.Done ? "#49CC90" : undefined,
+                  cursor: [EBookingState.Done, EBookingState.Reject].includes(
+                    record.state
+                  )
+                    ? "not-allowed"
+                    : "pointer",
                 }}
                 role="presentation"
                 onClick={() => {
-                  handleCheckOut(record.id);
+                  if (
+                    ![EBookingState.Done, EBookingState.Reject].includes(
+                      record.state
+                    )
+                  )
+                    handleCheckOut(record.id);
                 }}
               >
                 <LoginOutlined />
@@ -226,14 +262,26 @@ export default function RoomManagement() {
             </Tooltip>
             <Tooltip title="Hủy đặt phòng" placement="topLeft">
               <span
-                className="p-2 cursor-pointer"
+                className="p-2"
                 style={{
                   color:
                     record.state === EBookingState.Reject ? "red" : undefined,
+                  cursor:
+                    [EBookingState.Done, EBookingState.Reject].includes(
+                      record.state
+                    ) || record.is_checked_in
+                      ? "not-allowed"
+                      : "pointer",
                 }}
                 role="presentation"
                 onClick={() => {
-                  handleCancelRoom(record.id);
+                  if (
+                    ![EBookingState.Done, EBookingState.Reject].includes(
+                      record.state
+                    ) ||
+                    !record.is_checked_in
+                  )
+                    handleCancelRoom(record.id);
                 }}
               >
                 <CloseCircleOutlined />
@@ -286,6 +334,7 @@ export default function RoomManagement() {
       title: "Đơn giá",
       dataIndex: ["price"],
       align: "center",
+      render: (value) => value.toLocaleString() + " đ",
     },
 
     {
@@ -296,8 +345,9 @@ export default function RoomManagement() {
 
     {
       title: "Ngày sử dụng",
-      dataIndex: ["createAt"],
+      dataIndex: ["createdAt"],
       align: "center",
+      render: (value) => moment(value).format("hh:mm:ss . DD/MM/YYYY"),
     },
   ];
 
@@ -334,21 +384,72 @@ export default function RoomManagement() {
                   columns={columns1}
                   dataSource={record.used_services}
                   pagination={false}
+                  scroll={{ y: 300 }}
                 ></TableGlobal>
               </Col>
 
               <Col span={24}>
                 <Row gutter={66}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <TableGlobal
                       columns={columns2}
                       dataSource={record.booked_rooms}
                       pagination={false}
                       scrollX={500}
+                      scroll={{ y: 300 }}
                     ></TableGlobal>
                   </Col>
-                  <Col span={12}>
-                    <></>
+                  <Col span={16}>
+                    {/* <Space> */}
+                    <Descriptions title="Thông tin đặt phòng">
+                      <Descriptions.Item label="Tên khách hàng">
+                        {record?.customer?.username}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="CCCD">
+                        {record?.customer?.cccd}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Tổng giá dịch vụ">
+                        {record?.used_services
+                          ?.map(
+                            (service: any) => service.price * service.quantity
+                          )
+                          ?.reduce(
+                            (accumulator: number, currentValue: number) =>
+                              accumulator + currentValue,
+                            0
+                          )
+                          .toLocaleString()}{" "}
+                        đ
+                      </Descriptions.Item>
+
+                      <Descriptions.Item label="Địa chỉ">
+                        {record?.customer?.address}
+                      </Descriptions.Item>
+
+                      <Descriptions.Item label="Giá phòng">
+                        {(record?.price * record?.quantity).toLocaleString()} đ
+                      </Descriptions.Item>
+
+                      <Descriptions.Item label="Tổng cộng">
+                        <strong>
+                          {(
+                            record?.price * record?.quantity +
+                            record?.used_services
+                              ?.map(
+                                (service: any) =>
+                                  service.price * service.quantity
+                              )
+                              ?.reduce(
+                                (accumulator: number, currentValue: number) =>
+                                  accumulator + currentValue,
+                                0
+                              )
+                          ).toLocaleString()}{" "}
+                          đ
+                        </strong>
+                      </Descriptions.Item>
+                    </Descriptions>
+                    {/* </Space> */}
                   </Col>
                 </Row>
               </Col>

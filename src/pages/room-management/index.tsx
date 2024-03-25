@@ -20,9 +20,5 @@ export default function RoomManagement() {
     []
   );
 
-  return (
-    <div className="room-management-page">
-      <Tabs items={items} defaultActiveKey="1"></Tabs>
-    </div>
-  );
+  return <Tabs items={items} defaultActiveKey="2"></Tabs>;
 }

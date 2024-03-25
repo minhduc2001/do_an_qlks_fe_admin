@@ -9,10 +9,15 @@ import { PUBLIC_ROUTES } from "@/lazyLoading";
 import { useEffect } from "react";
 import ApiUser from "@/api/ApiUser";
 import Helmet from "@/components/Helmet";
+import store from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/redux/slices/UserSlice";
 
 function LayoutWrapper() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const isDashboardLayout = PUBLIC_ROUTES.find(
     (item) => item.path === location.pathname
   );
@@ -30,6 +35,13 @@ function LayoutWrapper() {
       navigate("/login");
     }
   }, [ApiUser.isLogin()]);
+
+  useEffect(() => {
+    const { user } = store.getState();
+    !["ROLE_ADMIN", "ROLE_RECEPTIONIST", "ROLE_ACCOUNTANT"].includes(
+      user.role ?? "ROLE_USER"
+    ) && dispatch(logoutUser());
+  }, []);
 
   return (
     <div className="wrapper">

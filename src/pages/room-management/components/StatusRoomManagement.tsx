@@ -1,92 +1,94 @@
 import { Col, Empty, Row, Tag } from "antd";
 import "./index.scss";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import ApiRoom, { IGetRoomsParams } from "@/api/ApiRoom";
-import AsyncWrapper from "@/layouts/AsyncWrapper";
+
+import ApiRoom from "@/api/ApiRoom";
+
 import moment from "moment";
+import TableGlobal from "@/components/TableGlobal";
+import { ColumnsType } from "antd/lib/table";
 
 const StatusRoomManagement = () => {
-  const [roomParams, setRoomParams] = useState<IGetRoomsParams>({
-    page: 1,
-    limit: 9999,
-  });
-
-  const {
-    data: rooms,
-    isLoading,
-    ...rest
-  } = useQuery(
-    ["get_rooms", roomParams],
-    () => ApiRoom.getRoomsWithRelation(roomParams),
+  const { data: rooms, isLoading } = useQuery(
+    ["get_rooms_with_relation"],
+    () => ApiRoom.getRoomsWithRelation(),
     {
-      keepPreviousData: true,
+      // keepPreviousData: true,
     }
   );
 
-  const handleDate = (date: any) => {
-    const newDate = new Date(date);
-    return (
-      newDate.getDate() +
-      " / " +
-      (newDate.getMonth() + 1) +
-      " / " +
-      newDate.getFullYear()
-    );
-  };
+  const columns: ColumnsType<any> = [
+    {
+      title: "Tên Khách hàng",
+      align: "center",
+      dataIndex: ["booking", "customer", "username"],
+      width: 200,
+    },
+    {
+      title: "Ngày checkin",
+      align: "center",
+      width: 220,
+      render: (_, record) => {
+        return moment(record.booking.checkin).format("DD/MM/YYYY");
+      },
+    },
+    {
+      title: "Ngày checkout",
+      align: "center",
+      width: 200,
+      render: (_, record) => {
+        return moment(record.booking.checkout).format("DD/MM/YYYY");
+      },
+    },
+    {
+      title: "Trạng thái",
+      align: "center",
+      width: 100,
+      render: (_, record) =>
+        record.booking.is_checked_in ? "Đang ở" : "Chờ nhận phòng",
+    },
+  ];
 
   return (
-    <AsyncWrapper loading={isLoading} fulfilled={true}>
-      {rooms?.results && rooms?.results?.length > 0 && (
-        <div className="root">
-          <Row>
-            {rooms?.results?.map((item) => {
-              return (
-                <Col span={24} className="col-data">
-                  <div className="title">{item.name}</div>
-                  <Row gutter={34}>
-                    {item?.rooms?.map((r) => {
-                      return (
-                        <Col span={8}>
-                          <div className="col-room">
-                            <div className="info-room">
-                              <h1>{r.name}</h1>
-                            </div>
-                            <div className="info-booking">
-                              {r?.booked_rooms?.length ? (
-                                r.booked_rooms?.map(
-                                  (br: any, index: number) => {
-                                    return !br.booking.is_checked_out ? (
-                                      <div key={index}>
-                                        <span>
-                                          {handleDate(br.booking.checkin)}
-                                        </span>
-                                        {" --- "}
-                                        <span>
-                                          {handleDate(br.booking.checkout)}
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    );
-                                  }
-                                )
-                              ) : (
-                                <Empty></Empty>
-                              )}
-                            </div>
+    <>
+      {!isLoading && (
+        <Row className="root-1">
+          {rooms?.map((item, index) => {
+            return (
+              <Col span={24} className="col-data" key={index}>
+                <h1 className="title">{item.name}</h1>
+                <Row gutter={34}>
+                  {item?.rooms?.map((r, index) => {
+                    return (
+                      <Col span={12} key={index}>
+                        <div className="col-room">
+                          <div className="info-room">
+                            <h1>{r.name}</h1>
                           </div>
-                        </Col>
-                      );
-                    })}
-                  </Row>
-                </Col>
-              );
-            })}
-          </Row>
-        </div>
+                          <div className="info-booking">
+                            {r?.booked_rooms?.length ? (
+                              <TableGlobal
+                                columns={columns}
+                                dataSource={r.booked_rooms}
+                                pagination={false}
+                                scrollX={420}
+                                scroll={{ y: 171 }}
+                              ></TableGlobal>
+                            ) : (
+                              <Empty></Empty>
+                            )}
+                          </div>
+                        </div>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Col>
+            );
+          })}
+        </Row>
       )}
-    </AsyncWrapper>
+    </>
   );
 };
 

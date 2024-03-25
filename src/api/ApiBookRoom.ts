@@ -109,8 +109,7 @@ function cancelRoom(id: string) {
 
 function downloadBill(id: string) {
   return downloadFile({
-    url: "/booking/export-bill",
-    params: { id },
+    url: "/booking/export-bill/" + id,
     fileName: `bill_of_room_id_${id}`,
     type: "pdf",
   });

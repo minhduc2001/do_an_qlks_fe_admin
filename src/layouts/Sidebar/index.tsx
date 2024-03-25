@@ -29,10 +29,10 @@ function createItems(routes: IRoute[]): MenuItem[] {
   const { role } = store.getState().user;
   return routes.map((route: IRoute) => {
     if (!route.roles) {
-      return getItem(route.name, route.path);
+      return getItem(route.name, route.path, route?.icon);
     }
     if (route.roles && role && route.roles.includes(role)) {
-      return getItem(route.name, route.path);
+      return getItem(route.name, route.path, route?.icon);
     }
     return null;
   });
@@ -65,7 +65,7 @@ function Sidebar() {
       })}
     >
       <Link className="flex items-center justify-center my-5" to="/">
-        <Avatar src={""} size="large" alt="audio book" />
+        <Avatar src={""} size="large" alt="hotel" />
         {isOpen && (
           <h4 className="transition-all duration-300 text-white ml-4 text-xl mb-0">
             Hotel Management

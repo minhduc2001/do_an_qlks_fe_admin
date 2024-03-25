@@ -96,7 +96,7 @@ const SeachRoom = () => {
                             <Col
                               key={index}
                               span={24}
-                              className="col-data"
+                              className="col-data-search"
                               onClick={() => {
                                 handleClick(data?.type_room?.slug);
                               }}

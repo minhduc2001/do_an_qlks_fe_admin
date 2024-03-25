@@ -7,7 +7,11 @@ import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
-import { checkPermission, groupPermission1 } from "@/lazyLoading";
+import {
+  checkPermission,
+  groupPermission1,
+  groupPermission2,
+} from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +19,7 @@ import { Popover, Row, Space, Tabs, TabsProps, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
 
 const TypeRoomManagement = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -125,7 +130,7 @@ const TypeRoomManagement = () => {
       width: 100,
       fixed: "right",
       render: (_, record) =>
-        checkPermission(groupPermission1, [store.getState().user?.role]) && (
+        checkPermission(groupPermission2, [store.getState().user?.role]) && (
           <Space>
             <Tooltip title="Sửa tên phòng con" placement="topLeft">
               <span
@@ -136,7 +141,7 @@ const TypeRoomManagement = () => {
                   setIsOpenModalRoomName(true);
                 }}
               >
-                <EditOutlined />
+                <IoMdAdd />
               </span>
             </Tooltip>
             <Tooltip title="Sửa thông tin phòng" placement="topLeft">
@@ -167,7 +172,7 @@ const TypeRoomManagement = () => {
             placeholder="Nhập loại phòng"
           />
         </Space>
-        {checkPermission(groupPermission1, [store.getState().user?.role]) && (
+        {checkPermission(groupPermission2, [store.getState().user?.role]) && (
           <Space>
             <ButtonGlobal
               title="Thêm phòng"
