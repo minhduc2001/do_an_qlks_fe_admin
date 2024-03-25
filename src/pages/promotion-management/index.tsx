@@ -72,6 +72,19 @@ export default function PromotionManagement() {
       width: 400,
     },
     {
+      title: "Điều kiện (theo mức giá)",
+      dataIndex: "condition",
+      align: "center",
+      width: 200,
+      render: (value) => value.toLocaleString() + " đ",
+    },
+    {
+      title: "Khuyễn mãi (%)",
+      dataIndex: "discount",
+      align: "center",
+      width: 150,
+    },
+    {
       title: "Ngày bắt đầu",
       dataIndex: "start_date",
       align: "center",

@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { PUBLIC_ROUTES } from "@/lazyLoading";
 import { useEffect } from "react";
 import ApiUser from "@/api/ApiUser";
-import Helmet from "@/components/Helmet";
 import store from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/redux/slices/UserSlice";

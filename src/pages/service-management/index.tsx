@@ -53,21 +53,26 @@ export default function RoomManagement() {
       title: "STT",
       align: "center",
       render: (_, __, i) => i + 1,
+      width: 50,
     },
     {
       title: "Tên dịch vụ",
       dataIndex: "name",
       align: "center",
+      width: 400,
     },
     {
       title: "Đơn vị",
       dataIndex: "unity",
       align: "center",
+      width: 150,
     },
     {
       title: "Đơn giá",
       dataIndex: "price",
       align: "center",
+      render: (value) => value.toLocaleString() + " đ",
+      width: 200,
     },
     {
       title: "Mô tả",

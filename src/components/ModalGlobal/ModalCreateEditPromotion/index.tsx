@@ -70,6 +70,7 @@ export default function ModalCreateEditPromotion({
       discount: selectedPromotion?.discount ?? 0,
       file: undefined,
       quantity: selectedPromotion?.discount ?? 1,
+      condition: selectedPromotion?.condition ?? 0,
     };
   }, [selectedPromotion]);
 
@@ -167,7 +168,11 @@ export default function ModalCreateEditPromotion({
                       }
                     />
                   </FormItemGlobal>
-                  <FormItemGlobal name="discount" label="Discount" required>
+                  <FormItemGlobal
+                    name="discount"
+                    label="Khuyễn mãi (%)"
+                    required
+                  >
                     <InputNumberFormikGlobal
                       name="discount"
                       placeholder="Discount"
@@ -191,11 +196,15 @@ export default function ModalCreateEditPromotion({
                       disabledDate={(d) => d <= values.start_date}
                     />
                   </FormItemGlobal>
-                  <FormItemGlobal name="quantity" label="Quantity" required>
+                  <FormItemGlobal
+                    name="condition"
+                    label="Điều kiện (theo mức giá)"
+                    required
+                  >
                     <InputNumberFormikGlobal
-                      name="quantity"
-                      placeholder="Quantity"
-                      min={1}
+                      name="condition"
+                      placeholder="Điều kiện"
+                      min={0}
                     />
                   </FormItemGlobal>
                 </Col>

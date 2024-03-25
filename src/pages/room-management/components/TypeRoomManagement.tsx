@@ -7,15 +7,11 @@ import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
-import {
-  checkPermission,
-  groupPermission1,
-  groupPermission2,
-} from "@/lazyLoading";
+import { checkPermission, groupPermission2 } from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Popover, Row, Space, Tabs, TabsProps, Tooltip } from "antd";
+import { Popover, Row, Space, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";

@@ -17,6 +17,7 @@ export interface IPromotionRes {
   end_date: string;
   discount: number;
   quantity: number;
+  condition: number;
 }
 
 export interface IGetPromotionsRes {

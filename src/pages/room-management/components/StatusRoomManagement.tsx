@@ -1,4 +1,4 @@
-import { Col, Empty, Row, Tag } from "antd";
+import { Col, Empty, Row } from "antd";
 import "./index.scss";
 import { useQuery } from "@tanstack/react-query";
 
