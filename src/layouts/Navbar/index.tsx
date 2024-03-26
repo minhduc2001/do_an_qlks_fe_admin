@@ -2,7 +2,7 @@ import { IRoute, PUBLIC_ROUTES } from "@/lazyLoading";
 import "./index.scss";
 import { Breadcrumb, Dropdown, Image, MenuProps, Space } from "antd";
 import { toggleMenu, useGetMenuState } from "@/redux/slices/MenuSlice";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -10,9 +10,10 @@ import {
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { logoutUser } from "@/redux/slices/UserSlice";
+import { logoutUser, reloadUser } from "@/redux/slices/UserSlice";
 import store from "@/redux/store";
-import { useIsFetching, useIsMutating } from "@tanstack/react-query";
+import { useIsFetching, useIsMutating, useQuery } from "@tanstack/react-query";
+import ApiUser from "@/api/ApiUser";
 
 const findPath = (routes: IRoute[], path: string): IRoute[] | null => {
   for (const route of routes) {
@@ -55,6 +56,12 @@ function Navbar() {
     dispatch(toggleMenu());
   }, []);
 
+  const { data: me } = useQuery(["get_me"], () => ApiUser.getMe());
+
+  useEffect(() => {
+    dispatch(reloadUser(me));
+  }, [me]);
+
   const handleLogOut = () => {
     dispatch(logoutUser());
     navigate("/login");
@@ -91,17 +98,17 @@ function Navbar() {
         <Dropdown menu={{ items: dropdownItems }}>
           <div className="cursor-pointer flex items-center gap-1">
             <Image
-              className="rounded-full"
+              className="rounded-full object-contain"
               width={40}
               height={40}
               src={
                 user.avatar ??
-                "https://d1hjkbq40fs2x4.cloudfront.net/2016-01-31/files/1045.jpg"
+                "https://ninhbinhlegendhotel.com/wp-content/uploads/2022/07/cropped-logo02.png"
               }
               alt="user avatar"
               preview={false}
             />
-            <span className="mr-20">
+            <span className="mr-20 ml-5">
               Xin chào <strong>{user.username}!</strong>
             </span>
           </div>

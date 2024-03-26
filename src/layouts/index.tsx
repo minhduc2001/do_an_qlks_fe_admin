@@ -5,7 +5,7 @@ import Content from "./Content";
 import MainRoutes from "@/routes";
 import Main from "./main";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PUBLIC_ROUTES } from "@/lazyLoading";
+import { PUBLIC_ROUTES, checkPermission } from "@/lazyLoading";
 import { useEffect } from "react";
 import ApiUser from "@/api/ApiUser";
 import store from "@/redux/store";
@@ -23,6 +23,8 @@ function LayoutWrapper() {
 
   useEffect(() => {
     if (location.pathname === "/") {
+      const { user } = store.getState();
+      if (user.role === "ROLE_ACCOUNTANT") return navigate("/statistic");
       navigate("/room-management");
     }
   }, [location.pathname]);

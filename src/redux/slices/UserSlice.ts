@@ -17,6 +17,10 @@ const UserSlice = createSlice({
     logoutUser: () => {
       return initialState;
     },
+
+    reloadUser: (state, action) => {
+      return { ...state, ...action.payload };
+    },
   },
 });
 
@@ -25,7 +29,7 @@ const useGetUserRedux = () => {
 };
 
 // Action creators are generated for each case reducer function
-export const { loginUser, logoutUser } = UserSlice.actions;
+export const { loginUser, logoutUser, reloadUser } = UserSlice.actions;
 
 export { useGetUserRedux };
 

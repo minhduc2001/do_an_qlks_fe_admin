@@ -65,7 +65,16 @@ function Sidebar() {
       })}
     >
       <Link className="flex items-center justify-center my-5" to="/">
-        <Avatar src={""} size="large" alt="hotel" />
+        <div className="bg-white rounded-full">
+          <Avatar
+            src={
+              "https://ninhbinhlegendhotel.com/wp-content/uploads/2022/07/cropped-logo02.png"
+            }
+            size="large"
+            alt="hotel"
+            className="object-cover bg-[#121212]"
+          />
+        </div>
         {isOpen && (
           <h4 className="transition-all duration-300 text-white ml-4 text-xl mb-0">
             Hotel Management

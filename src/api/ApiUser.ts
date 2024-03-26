@@ -44,8 +44,13 @@ function checkMail(data: any): Promise<ILoginRes[]> {
   return fetcher({ url: "customer/mail", method: "post", data });
 }
 
+function getMe(): Promise<ILoginRes> {
+  return fetcher({ url: "auth/get-me", method: "get" });
+}
+
 export default {
   login,
   isLogin,
   checkMail,
+  getMe,
 };
