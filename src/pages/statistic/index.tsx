@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { Column } from "@ant-design/plots";
-import { Divider, Space, DatePicker } from "antd";
+import { Divider, Space, DatePicker, Row, Col } from "antd";
 import { SelectGlobal } from "@/components/AntdGlobal";
 import { Pie } from "@ant-design/plots";
 import { Line } from "@ant-design/plots";
@@ -127,7 +127,6 @@ function RoomStatistic() {
     data: roomStatistic ?? [],
     xField: "name",
     yField: "value",
-    seriesField: "type",
     label: {
       style: {
         fill: "#FFFFFF",
@@ -142,10 +141,29 @@ function RoomStatistic() {
     },
   };
 
+  // const config = {
+  //   data: roomStatistic ?? [],
+  //   xField: "name",
+  //   yField: "value",
+  //   // seriesField: "type",
+  //   label: {
+  //     style: {
+  //       fill: "#FFFFFF",
+  //       opacity: 0.6,
+  //     },
+  //   },
+  //   xAxis: {
+  //     label: {
+  //       autoHide: true,
+  //       autoRotate: false,
+  //     },
+  //   },
+  // };
+
   return (
     <div className="service-statistic">
       <h1 className="text-center">
-        THỐNG KÊ DOANH THU - LƯỢT THUÊ PHÒNG THEO THỜI GIAN
+        THỐNG KÊ DOANH THU PHÒNG THEO THỜI GIAN
       </h1>
       <div className="flex justify-end">
         <Space>
@@ -301,9 +319,17 @@ function RevenueStatistic() {
 export default function Statistic() {
   return (
     <div>
-      <ServiceStatistic />
-      <Divider />
-      <RoomStatistic />
+      <Row gutter={33}>
+        <Col span={12}>
+          <ServiceStatistic />
+        </Col>
+        <Col span={12}>
+          <RoomStatistic />
+        </Col>
+      </Row>
+
+      {/* <Divider /> */}
+
       {/* <Divider /> */}
       {/* <RoomStatisticInCurrentWeek /> */}
       <Divider />

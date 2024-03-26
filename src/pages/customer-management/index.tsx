@@ -59,7 +59,7 @@ export default function RoomManagement() {
     },
     {
       title: "Số điện thoại",
-      dataIndex: "tel",
+      dataIndex: "phone",
       align: "center",
     },
     {

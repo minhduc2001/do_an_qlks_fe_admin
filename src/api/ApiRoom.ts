@@ -19,7 +19,7 @@ export interface IRoomRes {
   rooms?: IRoomName[];
   type_room: any;
   parent?: number;
-  contains?: number;
+  contains?: string;
   area?: number;
   type_bed?: string;
   checkin?: string;

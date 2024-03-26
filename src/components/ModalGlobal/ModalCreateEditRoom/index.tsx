@@ -84,6 +84,7 @@ export default function ModalCreateEditRoom({
     delete data.deletedAt;
     delete data.slug;
     delete data.rooms;
+    delete data.images;
 
     return data;
   }, [roomSelected]);
@@ -108,6 +109,8 @@ export default function ModalCreateEditRoom({
   const updateRoomMutation = useMutation(ApiRoom.updateRoom);
   const handleSubmit = async (values: ICreateRomeBody) => {
     const formData = new FormData();
+    // console.log(values.files);
+
     Object.entries(values).forEach(([key, value]) => {
       if (key !== "files") {
         formData.append(key, value);
@@ -115,6 +118,10 @@ export default function ModalCreateEditRoom({
         values.files.forEach((item) => formData.append(key, item));
       }
     });
+
+    // for (const value of formData.values()) {
+    //   console.log(value);
+    // }
 
     const newImage: string[] = files
       .filter((item) => item.uid.startsWith("initial"))
@@ -220,10 +227,9 @@ export default function ModalCreateEditRoom({
                   </FormItemGlobal>
 
                   <FormItemGlobal name="contains" label="Sức chứa" required>
-                    <InputNumberFormikGlobal
+                    <InputFormikGlobal
                       name="contains"
                       placeholder="Chứa tối đa"
-                      min={1}
                     />
                   </FormItemGlobal>
                 </Col>
@@ -270,6 +276,8 @@ export default function ModalCreateEditRoom({
                   onChange={onChange}
                   onRemove={onRemove}
                   multiple={true}
+                  // maxCount={4}
+                  // disabled={values.files.length > 4}
                 >
                   {values.files.length < 5 && "Upload"}
                 </Upload>
