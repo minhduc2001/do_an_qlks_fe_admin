@@ -20,12 +20,27 @@ import {
   LoginOutlined,
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Col, Descriptions, Row, Space, Tooltip } from "antd";
+import { Col, DatePicker, Descriptions, Row, Space, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
 import { checkPermission, groupPermission1 } from "@/lazyLoading";
 import store from "@/redux/store";
+import ApiStatistic, { IGetServiceStatisticParams } from "@/api/ApiStatistic";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
+const dateFormat = "YYYY/MM/DD";
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 
 export default function RoomManagement() {
   const [selectedBooking, setSelectedBooking] = useState<IBookingRes>();
@@ -35,6 +50,12 @@ export default function RoomManagement() {
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
+
+  const [serviceStatisticParams, setServiceStatisticParams] =
+    useState<IGetServiceStatisticParams>({
+      startDate: dayjs().subtract(30, "day").format(dateFormat).toString(),
+      endDate: dayjs().format(dateFormat),
+    });
 
   const { data: bookings, refetch } = useQuery(
     ["get_bookings", bookingParams],
@@ -102,34 +123,17 @@ export default function RoomManagement() {
     });
   };
 
-  // {
-  //   title: "Dịch vụ sử dụng",
-  //   dataIndex: "state",
-  //   align: "center",
-  //   render: (_, record) => (
-  //     <ul>
-  //       {record.used_services?.map((item) => (
-  //         <li>
-  //           <Popover
-  //             title={
-  //               <ul>
-  //                 <li>
-  //                   Ngày đặt: {moment(item.createdAt).format("YYYY-MM-DD")}
-  //                 </li>
-  //                 <li>Số lượng: {item.quantity}</li>
-  //                 <li>
-  //                   Đơn giá: {item.service?.price?.toLocaleString() + " vnđ"}
-  //                 </li>
-  //               </ul>
-  //             }
-  //           >
-  //             {item.name}
-  //           </Popover>
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   ),
-  // },
+  const handleRangeChange = (dates: any, dateStrings: any) => {
+    setServiceStatisticParams({
+      startDate: dateStrings[0],
+      endDate: dateStrings[1],
+    });
+  };
+
+  const exportExcelMutation = useMutation(ApiStatistic.exportExcelBooking);
+  const handleExportExcel = () => {
+    exportExcelMutation.mutate(serviceStatisticParams);
+  };
 
   const columns: ColumnsType<IBookingRes> = [
     {
@@ -364,6 +368,17 @@ export default function RoomManagement() {
           />
         </Space>
         <Space>
+          {/* @ts-ignore */}
+          <DatePicker.RangePicker
+            format={dateFormat}
+            defaultValue={[
+              dayjs(dayjs().subtract(30, "day"), dateFormat),
+              dayjs(dayjs(), dateFormat),
+            ]}
+            disabledDate={(d) => d >= moment()}
+            onChange={handleRangeChange}
+          />
+          <ButtonGlobal title="Xuất excel" onClick={handleExportExcel} />
           <ButtonGlobal
             title="Đặt phòng"
             onClick={() => setIsOpenModal("bookRoom")}

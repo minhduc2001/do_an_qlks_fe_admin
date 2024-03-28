@@ -2,19 +2,27 @@ import ApiCustomer, {
   ICustomerRes,
   IGetCustomersParams,
 } from "@/api/ApiCustomer";
-import { EGender } from "@/api/ApiUser";
+import ApiUser, { EGender } from "@/api/ApiUser";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
+import ButtonGlobal from "@/components/ButtonGlobal";
+import ModalCreateEditUser from "@/components/ModalGlobal/ModalCreateEditUser";
+import Notification from "@/components/Notification";
 import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
-import { useQuery } from "@tanstack/react-query";
-import { Row, Space } from "antd";
+import { checkPermission, groupPermission2 } from "@/lazyLoading";
+import store from "@/redux/store";
+import { EditOutlined } from "@ant-design/icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Col, Divider, Row, Space, Switch } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { useState } from "react";
 
 export default function RoomManagement() {
   const [searchValue, setSearchValue] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>();
   const [customerParams, setCustomerParams] = useState<IGetCustomersParams>({
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
@@ -28,6 +36,16 @@ export default function RoomManagement() {
     }
   );
 
+  const { data: users } = useQuery(
+    ["get_users", customerParams],
+    () => ApiUser.getUser(),
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  const { user } = store.getState();
+
   const handleChangeTable = (value: IChangeTable) => {
     setCustomerParams({
       ...customerParams,
@@ -35,6 +53,8 @@ export default function RoomManagement() {
       limit: value.pageSize,
     });
   };
+
+  const avtiveMutation = useMutation(ApiUser.activeUser);
 
   const columns: ColumnsType<ICustomerRes> = [
     {
@@ -75,25 +95,146 @@ export default function RoomManagement() {
     },
   ];
 
+  const columns1: ColumnsType<ICustomerRes> = [
+    {
+      title: "STT",
+      align: "center",
+      render: (_, __, i) => i + 1,
+      width: 70,
+    },
+    {
+      title: "Tên nhân viên",
+      dataIndex: "username",
+      align: "center",
+    },
+    {
+      title: "email",
+      dataIndex: "email",
+      align: "center",
+    },
+    {
+      title: "Chức vụ",
+      dataIndex: "role",
+      align: "center",
+      render: (value) => {
+        if (value === "ROLE_ACCOUNTANT") return "Kế toán";
+        else return "Lễ tân";
+      },
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "active",
+      align: "center",
+      render: (value, record) => {
+        return (
+          <Switch
+            checkedChildren="Đang hoạt động"
+            unCheckedChildren="Đã khóa"
+            defaultChecked={value}
+            loading={avtiveMutation.isLoading}
+            onChange={(e) => {
+              avtiveMutation.mutate(
+                { id: record.id, active: e },
+                {
+                  onSuccess: (resp) => {
+                    Notification.notificationSuccess(resp);
+                  },
+                }
+              );
+            }}
+          ></Switch>
+        );
+      },
+    },
+    {
+      title: "Hành Động",
+      align: "center",
+      fixed: "right",
+      width: 150,
+      render: (_, record) => (
+        <>
+          <span
+            className="p-2 cursor-pointer"
+            role="presentation"
+            onClick={() => {
+              setSelectedUser(record);
+              setOpenModal(true);
+            }}
+          >
+            <EditOutlined />
+          </span>
+        </>
+      ),
+    },
+  ];
+
   return (
     <div className="room-management-page">
-      <Row className="mb-5" justify="space-between">
-        <Space>
-          <InputSearchGlobal
-            onChange={(e) => setSearchValue(e.target.value.trim())}
-            onSearch={() =>
-              setCustomerParams({ ...customerParams, search: searchValue })
-            }
-            placeholder="Nhập tên, số điện thoại, email, ..."
+      <Row>
+        <Col span={24} className="h-[40vh]">
+          <Row className="mb-5 " justify="space-between">
+            <Space>
+              <InputSearchGlobal
+                onChange={(e) => setSearchValue(e.target.value.trim())}
+                onSearch={() =>
+                  setCustomerParams({ ...customerParams, search: searchValue })
+                }
+                placeholder="Nhập tên, số điện thoại, email, ..."
+              />
+            </Space>
+          </Row>
+          <TableGlobal
+            total={customers?.metadata.totalItems}
+            dataSource={customers?.results}
+            columns={columns}
+            onChangeTable={handleChangeTable}
           />
-        </Space>
+        </Col>
+
+        <Divider />
+
+        {checkPermission(groupPermission2, [user.role]) && (
+          <Col span={24}>
+            <div className="text-center text-bold text-[20px]">
+              Quản lý nhân viên
+            </div>
+            <Row className="mb-5" justify="space-between">
+              <Space>
+                <InputSearchGlobal
+                  onChange={(e) => setSearchValue(e.target.value.trim())}
+                  onSearch={() =>
+                    setCustomerParams({
+                      ...customerParams,
+                      search: searchValue,
+                    })
+                  }
+                  placeholder="Nhập tên, email, ..."
+                />
+              </Space>
+              <Space>
+                <ButtonGlobal
+                  title="Thêm nhân viên"
+                  onClick={() => setOpenModal(true)}
+                />
+              </Space>
+            </Row>
+            <TableGlobal
+              total={users?.metadata.totalItems}
+              dataSource={users?.results}
+              columns={columns1}
+              onChangeTable={handleChangeTable}
+            />
+            <ModalCreateEditUser
+              handleCloseModal={() => {
+                setOpenModal(false);
+                setSelectedUser(null);
+              }}
+              isOpenModal={openModal}
+              selectedUser={selectedUser}
+            ></ModalCreateEditUser>
+          </Col>
+        )}
       </Row>
-      <TableGlobal
-        total={customers?.metadata.totalItems}
-        dataSource={customers?.results}
-        columns={columns}
-        onChangeTable={handleChangeTable}
-      />
     </div>
   );
 }

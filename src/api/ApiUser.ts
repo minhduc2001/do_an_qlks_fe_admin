@@ -22,6 +22,26 @@ export interface ILoginRes {
   active?: true;
   avatar?: string;
   cccd?: string;
+  password?: string;
+  id?: number;
+}
+
+export interface ICreateUser {
+  email: string;
+  username: string;
+  role: "ROLE_ADMIN" | "ROLE_RECEPTIONIST" | "ROLE_ACCOUNTANT";
+  password: string;
+  id?: number;
+}
+
+export interface IGetUserRes {
+  metadata: {
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    totalItems: number;
+  };
+  results: ILoginRes[];
 }
 
 function login(data: ILoginBody): Promise<ILoginRes> {
@@ -29,6 +49,24 @@ function login(data: ILoginBody): Promise<ILoginRes> {
     { url: "auth/login", method: "post", data },
     { isXWWWForm: true }
   );
+}
+
+function getUser(): Promise<IGetUserRes> {
+  return fetcher({ url: "user", method: "get" });
+}
+
+function createUser(data: ICreateUser): Promise<ILoginRes> {
+  return fetcher({ url: "user", method: "post", data });
+}
+
+function updateUser(data: any): Promise<ILoginRes> {
+  const { id, ...rest } = data;
+  return fetcher({ url: "user/" + id, method: "put", data: rest.data });
+}
+
+function activeUser(data: any): Promise<string> {
+  const { id, ...rest } = data;
+  return fetcher({ url: "user/active/" + id, method: "put", data: rest });
 }
 
 function getAuthToken(): string | undefined {
@@ -53,4 +91,8 @@ export default {
   isLogin,
   checkMail,
   getMe,
+  getUser,
+  createUser,
+  updateUser,
+  activeUser,
 };

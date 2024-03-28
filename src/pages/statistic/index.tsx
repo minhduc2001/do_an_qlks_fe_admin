@@ -163,7 +163,7 @@ function RoomStatistic() {
   return (
     <div className="service-statistic">
       <h1 className="text-center">
-        THỐNG KÊ DOANH THU PHÒNG THEO THỜI GIAN
+        THỐNG KÊ DOANH THU LOẠI PHÒNG THEO THỜI GIAN
       </h1>
       <div className="flex justify-end">
         <Space>

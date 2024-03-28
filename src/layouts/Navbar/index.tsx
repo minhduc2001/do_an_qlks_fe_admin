@@ -3,11 +3,7 @@ import "./index.scss";
 import { Breadcrumb, Dropdown, Image, MenuProps, Space } from "antd";
 import { toggleMenu, useGetMenuState } from "@/redux/slices/MenuSlice";
 import { useCallback, useEffect, useMemo } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutUser, reloadUser } from "@/redux/slices/UserSlice";

@@ -85,6 +85,14 @@ function exportExcelRevenue(params: IRevenueStatisticParams) {
   });
 }
 
+function exportExcelBooking(params: IGetServiceStatisticParams) {
+  return downloadFile({
+    url: "/bill/export-excel",
+    params,
+    fileName: `export_excel_booking_${params.startDate}_${params.endDate}`,
+  });
+}
+
 export default {
   getServiceStatistic,
   getRoomStatistic,
@@ -93,4 +101,5 @@ export default {
   exportExcelService,
   exportExcelRoom,
   exportExcelRevenue,
+  exportExcelBooking,
 };
