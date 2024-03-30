@@ -132,7 +132,13 @@ export default function RoomManagement() {
 
   const exportExcelMutation = useMutation(ApiStatistic.exportExcelBooking);
   const handleExportExcel = () => {
-    exportExcelMutation.mutate(serviceStatisticParams);
+    exportExcelMutation.mutate(serviceStatisticParams, {
+      onSuccess: () => {
+        Notification.notificationSuccess(
+          "Không có thống kê trong khoảng thời gian này"
+        );
+      },
+    });
   };
 
   const columns: ColumnsType<IBookingRes> = [
@@ -426,6 +432,9 @@ export default function RoomManagement() {
                       <Descriptions.Item label="CCCD">
                         {record?.customer?.cccd}
                       </Descriptions.Item>
+                      <Descriptions.Item label="Địa chỉ">
+                        {record?.customer?.address}
+                      </Descriptions.Item>
                       <Descriptions.Item label="Tổng giá dịch vụ">
                         {record?.used_services
                           ?.map(
@@ -438,10 +447,6 @@ export default function RoomManagement() {
                           )
                           .toLocaleString()}{" "}
                         đ
-                      </Descriptions.Item>
-
-                      <Descriptions.Item label="Địa chỉ">
-                        {record?.customer?.address}
                       </Descriptions.Item>
 
                       <Descriptions.Item label="Giá phòng">
