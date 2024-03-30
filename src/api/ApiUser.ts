@@ -1,5 +1,6 @@
 import store from "@/redux/store";
 import { fetcher } from "./Fetcher";
+import { IGetCustomersParams } from "./ApiCustomer";
 
 export enum EGender {
   Male,
@@ -51,7 +52,7 @@ function login(data: ILoginBody): Promise<ILoginRes> {
   );
 }
 
-function getUser(): Promise<IGetUserRes> {
+function getUser(params?: IGetCustomersParams): Promise<IGetUserRes> {
   return fetcher({ url: "user", method: "get" });
 }
 

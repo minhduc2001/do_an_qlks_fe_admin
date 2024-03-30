@@ -28,6 +28,11 @@ export default function RoomManagement() {
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
 
+  const [userParams, setUserParams] = useState<IGetCustomersParams>({
+    page: 0,
+    limit: TABLE_DEFAULT_VALUE.defaultPageSize,
+  });
+
   const { data: customers } = useQuery(
     ["get_customers", customerParams],
     () => ApiCustomer.getCustomers(customerParams),
@@ -40,7 +45,7 @@ export default function RoomManagement() {
   const getDataUser = useMutation(ApiUser.getUser);
 
   useEffect(() => {
-    getDataUser.mutate();
+    getDataUser.mutate(userParams);
   }, [checkPermission(groupPermission2, [user.role])]);
 
   const handleChangeTable = (value: IChangeTable) => {
@@ -202,8 +207,8 @@ export default function RoomManagement() {
                 <InputSearchGlobal
                   onChange={(e) => setSearchValue(e.target.value.trim())}
                   onSearch={() =>
-                    setCustomerParams({
-                      ...customerParams,
+                    setUserParams({
+                      ...userParams,
                       search: searchValue,
                     })
                   }
