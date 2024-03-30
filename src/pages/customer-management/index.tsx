@@ -17,7 +17,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Col, Divider, Row, Space, Switch } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RoomManagement() {
   const [searchValue, setSearchValue] = useState("");
@@ -35,16 +35,13 @@ export default function RoomManagement() {
       keepPreviousData: true,
     }
   );
-
-  const { data: users } = useQuery(
-    ["get_users", customerParams],
-    () => ApiUser.getUser(),
-    {
-      keepPreviousData: true,
-    }
-  );
-
   const { user } = store.getState();
+
+  const getDataUser = useMutation(ApiUser.getUser);
+
+  useEffect(() => {
+    getDataUser.mutate();
+  }, [checkPermission(groupPermission2, [user.role])]);
 
   const handleChangeTable = (value: IChangeTable) => {
     setCustomerParams({
@@ -133,6 +130,8 @@ export default function RoomManagement() {
             defaultChecked={value}
             loading={avtiveMutation.isLoading}
             onChange={(e) => {
+              console.log(e);
+
               avtiveMutation.mutate(
                 { id: record.id, active: e },
                 {
@@ -219,8 +218,8 @@ export default function RoomManagement() {
               </Space>
             </Row>
             <TableGlobal
-              total={users?.metadata.totalItems}
-              dataSource={users?.results}
+              total={getDataUser?.data?.metadata.totalItems}
+              dataSource={getDataUser?.data?.results}
               columns={columns1}
               onChangeTable={handleChangeTable}
             />

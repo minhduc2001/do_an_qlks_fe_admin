@@ -61,7 +61,11 @@ function createUser(data: ICreateUser): Promise<ILoginRes> {
 
 function updateUser(data: any): Promise<ILoginRes> {
   const { id, ...rest } = data;
-  return fetcher({ url: "user/" + id, method: "put", data: rest.data });
+  return fetcher({
+    url: "user/" + id + "/cms",
+    method: "put",
+    data: rest.data,
+  });
 }
 
 function activeUser(data: any): Promise<string> {
