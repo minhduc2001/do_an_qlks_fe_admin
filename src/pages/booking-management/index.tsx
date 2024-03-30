@@ -417,6 +417,9 @@ export default function RoomManagement() {
                   <Col span={16}>
                     {/* <Space> */}
                     <Descriptions title="Thông tin đặt phòng">
+                      <Descriptions.Item label="Nhân viên phụ trách">
+                        {record?.user?.username}
+                      </Descriptions.Item>
                       <Descriptions.Item label="Tên khách hàng">
                         {record?.customer?.username}
                       </Descriptions.Item>
@@ -445,10 +448,18 @@ export default function RoomManagement() {
                         {(record?.price * record?.quantity).toLocaleString()} đ
                       </Descriptions.Item>
 
+                      <Descriptions.Item label="Giảm giá">
+                        {record?.discount} %
+                      </Descriptions.Item>
+
                       <Descriptions.Item label="Tổng cộng">
                         <strong>
                           {(
-                            record?.price * record?.quantity +
+                            record?.price * record?.quantity -
+                            (record?.price *
+                              record?.quantity *
+                              record?.discount) /
+                              100 +
                             record?.used_services
                               ?.map(
                                 (service: any) =>
