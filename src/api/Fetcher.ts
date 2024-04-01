@@ -36,7 +36,7 @@ function handleError(dataError: IDataError) {
 
 export function fetcher<T>(
   config: AxiosRequestConfig,
-  options?: IFetcherOptions,
+  options?: IFetcherOptions
 ) {
   const defaultOptions: IFetcherOptions = {
     displayError: true,
@@ -161,8 +161,12 @@ export async function downloadFile({
 
         resolve("OK");
       })
-      .catch(() => {
-        Notification.notificationSuccess("Tải xuống thất bại");
+      .catch((e) => {
+        if (e.response.config.url.includes("/bill")) {
+          Notification.notificationSuccess(
+            "Không có dữ liệu thống kê trong khoảng thời gian này!"
+          );
+        } else Notification.notificationSuccess("Tải xuống thất bại");
         reject();
       });
   });

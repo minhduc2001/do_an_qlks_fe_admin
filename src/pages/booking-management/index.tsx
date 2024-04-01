@@ -132,13 +132,7 @@ export default function RoomManagement() {
 
   const exportExcelMutation = useMutation(ApiStatistic.exportExcelBooking);
   const handleExportExcel = () => {
-    exportExcelMutation.mutate(serviceStatisticParams, {
-      onSuccess: () => {
-        Notification.notificationSuccess(
-          "Không có thống kê trong khoảng thời gian này"
-        );
-      },
-    });
+    exportExcelMutation.mutate(serviceStatisticParams);
   };
 
   const columns: ColumnsType<IBookingRes> = [
