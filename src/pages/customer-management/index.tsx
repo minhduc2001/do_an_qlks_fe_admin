@@ -32,7 +32,6 @@ export default function RoomManagement() {
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
-
   const { data: customers } = useQuery(
     ["get_customers", customerParams],
     () => ApiCustomer.getCustomers(customerParams),

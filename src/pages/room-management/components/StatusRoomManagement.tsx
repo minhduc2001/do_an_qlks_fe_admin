@@ -1,4 +1,4 @@
-import { Col, Empty, Row } from "antd";
+import { Col, Collapse, Empty, Row } from "antd";
 import "./index.scss";
 import { useQuery } from "@tanstack/react-query";
 
@@ -48,6 +48,43 @@ const StatusRoomManagement = () => {
         record.booking.is_checked_in ? "Đang ở" : "Chờ nhận phòng",
     },
   ];
+
+  return (
+    <Collapse defaultActiveKey={["1"]}>
+      {rooms?.map((item, index) => {
+        return (
+          <Collapse.Panel header={item.name} key={index} className="root-1">
+            <Row gutter={34}>
+              {item?.rooms?.map((r, index) => {
+                return (
+                  <Col span={12} key={index}>
+                    <div className="col-room">
+                      <div className="info-room">
+                        <h1>{r.name}</h1>
+                      </div>
+                      <div className="info-booking">
+                        {r?.booked_rooms?.length ? (
+                          <TableGlobal
+                            columns={columns}
+                            dataSource={r.booked_rooms}
+                            pagination={false}
+                            scrollX={420}
+                            scroll={{ y: 171 }}
+                          ></TableGlobal>
+                        ) : (
+                          <Empty></Empty>
+                        )}
+                      </div>
+                    </div>
+                  </Col>
+                );
+              })}
+            </Row>
+          </Collapse.Panel>
+        );
+      })}
+    </Collapse>
+  );
 
   return (
     <>
