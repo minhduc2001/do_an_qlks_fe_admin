@@ -5,6 +5,7 @@ import ApiPromotion, {
 import { InputSearchGlobal } from "@/components/AntdGlobal";
 import ButtonGlobal from "@/components/ButtonGlobal";
 import ModalCreateEditPromotion from "@/components/ModalGlobal/ModalCreateEditPromotion";
+import Notification from "@/components/Notification";
 import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
@@ -16,8 +17,8 @@ import {
 } from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import { Row, Space } from "antd";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Row, Space, Switch } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
@@ -51,6 +52,8 @@ export default function PromotionManagement() {
       limit: value.pageSize,
     });
   };
+
+  const avtiveMutation = useMutation(ApiPromotion.active);
 
   const columns: ColumnsType<IPromotionRes> = [
     {
@@ -103,16 +106,36 @@ export default function PromotionManagement() {
       fixed: "right",
       render: (_, record) =>
         checkPermission(groupPermission2, [store.getState().user.role]) && (
-          <span
-            className="p-2 cursor-pointer"
-            role="presentation"
-            onClick={() => {
-              setSelectedPromotion(record);
-              setIsOpenModal(true);
-            }}
-          >
-            <EditOutlined />
-          </span>
+          <>
+            <Switch
+              checkedChildren="On"
+              unCheckedChildren="Off"
+              defaultChecked={record.active}
+              loading={avtiveMutation.isLoading}
+              onChange={(e) => {
+                console.log(e);
+
+                avtiveMutation.mutate(
+                  { id: record.id, active: e },
+                  {
+                    onSuccess: (resp) => {
+                      Notification.notificationSuccess(resp);
+                    },
+                  }
+                );
+              }}
+            ></Switch>
+            <span
+              className="p-2 cursor-pointer"
+              role="presentation"
+              onClick={() => {
+                setSelectedPromotion(record);
+                setIsOpenModal(true);
+              }}
+            >
+              <EditOutlined />
+            </span>
+          </>
         ),
     },
   ];

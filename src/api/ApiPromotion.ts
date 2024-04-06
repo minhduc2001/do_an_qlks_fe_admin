@@ -18,6 +18,7 @@ export interface IPromotionRes {
   discount: number;
   quantity: number;
   condition: number;
+  active: boolean;
 }
 
 export interface IGetPromotionsRes {
@@ -50,8 +51,17 @@ const updatePromotion = (data: FormData) => {
   );
 };
 
+const active = (data: { id: string; active: boolean }): Promise<string> => {
+  return fetcher({
+    method: "patch",
+    url: "/promotion/" + data.id,
+    data: { active: data.active },
+  });
+};
+
 export default {
   getPromotions,
   createPromotion,
   updatePromotion,
+  active,
 };

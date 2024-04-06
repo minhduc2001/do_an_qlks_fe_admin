@@ -2,6 +2,7 @@ import ApiService, { IGetServicesParams, IServiceRes } from "@/api/ApiService";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
 import ButtonGlobal from "@/components/ButtonGlobal";
 import ModalCreateEditService from "@/components/ModalGlobal/ModalCreateEditService";
+import Notification from "@/components/Notification";
 import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
@@ -13,8 +14,8 @@ import {
 } from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import { Row, Space } from "antd";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Row, Space, Switch } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { useState } from "react";
 
@@ -47,6 +48,8 @@ export default function RoomManagement() {
       limit: value.pageSize,
     });
   };
+
+  const avtiveMutation = useMutation(ApiService.active);
 
   const columns: ColumnsType<IServiceRes> = [
     {
@@ -86,16 +89,36 @@ export default function RoomManagement() {
       fixed: "right",
       render: (_, record) =>
         checkPermission(groupPermission2, [store.getState().user.role]) && (
-          <span
-            className="p-2 cursor-pointer"
-            role="presentation"
-            onClick={() => {
-              setSelectedService(record);
-              setIsOpenModal(true);
-            }}
-          >
-            <EditOutlined />
-          </span>
+          <>
+            <Switch
+              checkedChildren="On"
+              unCheckedChildren="Off"
+              defaultChecked={record.active}
+              loading={avtiveMutation.isLoading}
+              onChange={(e) => {
+                console.log(e);
+
+                avtiveMutation.mutate(
+                  { id: record.id, active: e },
+                  {
+                    onSuccess: (resp) => {
+                      Notification.notificationSuccess(resp);
+                    },
+                  }
+                );
+              }}
+            ></Switch>
+            <span
+              className="p-2 cursor-pointer"
+              role="presentation"
+              onClick={() => {
+                setSelectedService(record);
+                setIsOpenModal(true);
+              }}
+            >
+              <EditOutlined />
+            </span>
+          </>
         ),
     },
   ];

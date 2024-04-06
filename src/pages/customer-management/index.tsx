@@ -44,7 +44,9 @@ export default function RoomManagement() {
   const getDataUser = useMutation(ApiUser.getUser);
 
   useEffect(() => {
-    getDataUser.mutate(userParams);
+    if (checkPermission(groupPermission2, [user.role])) {
+      getDataUser.mutate(userParams);
+    }
   }, [checkPermission(groupPermission2, [user.role])]);
 
   const handleChangeTable = (value: IChangeTable) => {

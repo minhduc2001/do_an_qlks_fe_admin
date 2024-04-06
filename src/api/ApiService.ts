@@ -15,6 +15,7 @@ export interface IServiceRes {
   price: number;
   description: string;
   image: string;
+  active: boolean;
 }
 
 export interface IGetServicesRes {
@@ -49,8 +50,23 @@ function updateService({ id, data }: { id: number; data: FormData }) {
   );
 }
 
+function active({
+  id,
+  active,
+}: {
+  id: string;
+  active: boolean;
+}): Promise<string> {
+  return fetcher({
+    url: `/services/${id}`,
+    method: "patch",
+    data: { active },
+  });
+}
+
 export default {
   getServices,
   createService,
   updateService,
+  active,
 };
