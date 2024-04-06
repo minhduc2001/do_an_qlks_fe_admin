@@ -32,6 +32,12 @@ function getServices(params?: IGetServicesParams): Promise<IGetServicesRes> {
   return fetcher({ url: "services", method: "get", params });
 }
 
+function getServicesActive(
+  params?: IGetServicesParams
+): Promise<IGetServicesRes> {
+  return fetcher({ url: "services/find", method: "get", params });
+}
+
 function createService(data: FormData) {
   return fetcher(
     { url: "/services", method: "post", data },
@@ -69,4 +75,5 @@ export default {
   createService,
   updateService,
   active,
+  getServicesActive,
 };

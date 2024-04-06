@@ -10,6 +10,11 @@ interface IServiceStatisticRes {
   value: number;
 }
 
+interface IRevenueBookingStatisticRes {
+  date: string;
+  value: number;
+}
+
 export interface IGetRoomStatisticParams {
   year: number;
   month?: number;
@@ -41,6 +46,12 @@ function getServiceStatistic(
   params: IGetServiceStatisticParams
 ): Promise<IServiceStatisticRes[]> {
   return fetcher({ url: "/bill/stats-service", method: "get", params });
+}
+
+function getRevenueBookingStatistic(
+  params: IGetServiceStatisticParams
+): Promise<IServiceStatisticRes[]> {
+  return fetcher({ url: "/bill/stats-revenue-booking", method: "get", params });
 }
 
 function getRoomStatistic(
@@ -102,4 +113,5 @@ export default {
   exportExcelRoom,
   exportExcelRevenue,
   exportExcelBooking,
+  getRevenueBookingStatistic,
 };

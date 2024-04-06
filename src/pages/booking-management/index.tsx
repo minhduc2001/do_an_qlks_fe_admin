@@ -368,17 +368,6 @@ export default function RoomManagement() {
           />
         </Space>
         <Space>
-          {/* @ts-ignore */}
-          <DatePicker.RangePicker
-            format={dateFormat}
-            defaultValue={[
-              dayjs(dayjs().subtract(30, "day"), dateFormat),
-              dayjs(dayjs(), dateFormat),
-            ]}
-            disabledDate={(d) => d >= moment()}
-            onChange={handleRangeChange}
-          />
-          <ButtonGlobal title="Xuất excel" onClick={handleExportExcel} />
           <ButtonGlobal
             title="Đặt phòng"
             onClick={() => setIsOpenModal("bookRoom")}

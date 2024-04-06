@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { Column } from "@ant-design/plots";
-import { Divider, Space, DatePicker, Row, Col } from "antd";
+import { Divider, Space, DatePicker, Row, Col, Card } from "antd";
 import { SelectGlobal } from "@/components/AntdGlobal";
 import { Pie } from "@ant-design/plots";
 import { Line } from "@ant-design/plots";
@@ -19,6 +19,7 @@ import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekYear from "dayjs/plugin/weekYear";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 const dateFormat = "YYYY/MM/DD";
 dayjs.extend(customParseFormat);
 dayjs.extend(advancedFormat);
@@ -89,7 +90,7 @@ function ServiceStatistic() {
               dayjs(dayjs().subtract(30, "day"), dateFormat),
               dayjs(dayjs(), dateFormat),
             ]}
-            disabledDate={(d) => d >= moment()}
+            // disabledDate={(d) => d >= moment()}
             onChange={handleRangeChange}
           />
         </Space>
@@ -179,7 +180,7 @@ function RoomStatistic() {
               dayjs(dayjs().subtract(30, "day"), dateFormat),
               dayjs(dayjs(), dateFormat),
             ]}
-            disabledDate={(d) => d >= moment()}
+            // disabledDate={(d) => d >= moment()}
             onChange={handleRangeChange}
           />
         </Space>
@@ -316,9 +317,79 @@ function RevenueStatistic() {
   );
 }
 
+function RevenueBookingStatistic() {
+  const [serviceStatisticParams, setServiceStatisticParams] =
+    useState<IGetServiceStatisticParams>({
+      startDate: dayjs().subtract(30, "day").format(dateFormat).toString(),
+      endDate: dayjs().format(dateFormat),
+    });
+
+  const { data: revenueBookingStatistic } = useQuery(
+    ["get_revenue_booking_statistic", [serviceStatisticParams]],
+    () => ApiStatistic.getRevenueBookingStatistic(serviceStatisticParams)
+  );
+
+  const exportExcelServiceMutation = useMutation(
+    ApiStatistic.exportExcelBooking
+  );
+  const handleExportExcel = () => {
+    exportExcelServiceMutation.mutate(serviceStatisticParams);
+  };
+
+  const handleRangeChange = (dates: any, dateStrings: any) => {
+    setServiceStatisticParams({
+      startDate: dateStrings[0],
+      endDate: dateStrings[1],
+    });
+  };
+
+  const config = {
+    data: revenueBookingStatistic ?? [],
+    xField: "name",
+    yField: "value",
+  };
+
+  return (
+    <div className="service-statistic">
+      <h1 className="text-center">THỐNG KÊ ĐƠN ĐẶT PHÒNG THEO THỜI GIAN</h1>
+      <div className="flex justify-end">
+        <Space>
+          <ButtonGlobal
+            className="!h-[30px]"
+            title="Xuất excel"
+            onClick={handleExportExcel}
+          />
+
+          {/* @ts-ignore */}
+          <DatePicker.RangePicker
+            format={dateFormat}
+            defaultValue={[
+              dayjs(dayjs().subtract(30, "day"), dateFormat),
+              dayjs(dayjs(), dateFormat),
+            ]}
+            // disabledDate={(d) => d >= moment()}
+            onChange={handleRangeChange}
+          />
+        </Space>
+      </div>
+
+      <Line {...config} />
+    </div>
+  );
+}
+
 export default function Statistic() {
   return (
     <div>
+      <Row>
+        <Col span={12}>
+          <RevenueBookingStatistic />
+        </Col>
+        <Col span={12}>
+          <RevenueStatistic />
+        </Col>
+      </Row>
+      <Divider />
       <Row gutter={33}>
         <Col span={12}>
           <ServiceStatistic />
@@ -332,8 +403,6 @@ export default function Statistic() {
 
       {/* <Divider /> */}
       {/* <RoomStatisticInCurrentWeek /> */}
-      <Divider />
-      <RevenueStatistic />
     </div>
   );
 }

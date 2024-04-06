@@ -37,8 +37,8 @@ export default function ModalUpdateService({
     };
   }, [selectedBooking]);
 
-  const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices()
+  const { data: services } = useQuery(["get_services_active"], () =>
+    ApiService.getServicesActive()
   );
   const convertServicesValue = useMemo(() => {
     return services?.results.map((item) => ({
