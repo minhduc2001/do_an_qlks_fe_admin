@@ -44,7 +44,7 @@ const TypeRoomManagement = () => {
   const handleChangeTable = (value: IChangeTable) => {
     setRoomParams({
       ...roomParams,
-      page: value.page - 1,
+      page: value.page,
       limit: value.pageSize,
     });
   };

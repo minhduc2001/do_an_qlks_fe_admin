@@ -28,7 +28,7 @@ export default function PromotionManagement() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [promotionParams, setPromotionParams] = useState<IGetPromotionsParams>({
-    page: 0,
+    page: 1,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
   const [selectedPromotion, setSelectedPromotion] = useState<IPromotionRes>();
@@ -40,7 +40,7 @@ export default function PromotionManagement() {
       keepPreviousData: true,
     }
   );
-
+  -1;
   const handleCloseModal = () => {
     setSelectedPromotion(undefined);
     setIsOpenModal(false);
@@ -49,7 +49,7 @@ export default function PromotionManagement() {
   const handleChangeTable = (value: IChangeTable) => {
     setPromotionParams({
       ...promotionParams,
-      page: value.page - 1,
+      page: value.page,
       limit: value.pageSize,
     });
   };

@@ -24,7 +24,7 @@ export default function RoomManagement() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [serviceParams, setServiceParams] = useState<IGetServicesParams>({
-    page: 0,
+    page: 1,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
   const [selectedService, setSelectedService] = useState<IServiceRes>();
@@ -45,7 +45,7 @@ export default function RoomManagement() {
   const handleChangeTable = (value: IChangeTable) => {
     setServiceParams({
       ...serviceParams,
-      page: value.page - 1,
+      page: value.page,
       limit: value.pageSize,
     });
   };

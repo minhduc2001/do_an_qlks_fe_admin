@@ -47,7 +47,7 @@ export default function RoomManagement() {
   const [isOpenModal, setIsOpenModal] = useState<string>("");
   const [searchValue, setSearchValue] = useState("");
   const [bookingParams, setBookingParams] = useState<IGetBookingsParams>({
-    page: 0,
+    page: 1,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
 
@@ -118,7 +118,7 @@ export default function RoomManagement() {
   const handleChangeTable = (value: IChangeTable) => {
     setBookingParams({
       ...bookingParams,
-      page: value.page - 1,
+      page: value.page,
       limit: value.pageSize,
     });
   };

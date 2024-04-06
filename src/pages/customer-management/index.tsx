@@ -24,12 +24,12 @@ export default function RoomManagement() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>();
   const [customerParams, setCustomerParams] = useState<IGetCustomersParams>({
-    page: 0,
+    page: 1,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
 
   const [userParams, setUserParams] = useState<IGetCustomersParams>({
-    page: 0,
+    page: 1,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
   const { data: customers } = useQuery(
@@ -52,7 +52,7 @@ export default function RoomManagement() {
   const handleChangeTable = (value: IChangeTable) => {
     setCustomerParams({
       ...customerParams,
-      page: value.page - 1,
+      page: value.page,
       limit: value.pageSize,
     });
   };
