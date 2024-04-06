@@ -14,6 +14,7 @@ import {
   checkPermission,
   groupPermission1,
   groupPermission2,
+  groupPermission4,
 } from "@/lazyLoading";
 import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
@@ -104,39 +105,53 @@ export default function PromotionManagement() {
       align: "center",
       width: 100,
       fixed: "right",
-      render: (_, record) =>
-        checkPermission(groupPermission2, [store.getState().user.role]) && (
-          <>
-            <Switch
-              checkedChildren="On"
-              unCheckedChildren="Off"
-              defaultChecked={record.active}
-              loading={avtiveMutation.isLoading}
-              onChange={(e) => {
-                console.log(e);
+      render: (_, record) => (
+        <>
+          {checkPermission(groupPermission2, [store.getState().user.role]) && (
+            <>
+              <Switch
+                checkedChildren="On"
+                unCheckedChildren="Off"
+                defaultChecked={record.active}
+                loading={avtiveMutation.isLoading}
+                onChange={(e) => {
+                  console.log(e);
 
-                avtiveMutation.mutate(
-                  { id: record.id, active: e },
-                  {
-                    onSuccess: (resp) => {
-                      Notification.notificationSuccess(resp);
-                    },
-                  }
-                );
-              }}
-            ></Switch>
-            <span
-              className="p-2 cursor-pointer"
-              role="presentation"
-              onClick={() => {
-                setSelectedPromotion(record);
-                setIsOpenModal(true);
-              }}
-            >
-              <EditOutlined />
-            </span>
-          </>
-        ),
+                  avtiveMutation.mutate(
+                    { id: record.id, active: e },
+                    {
+                      onSuccess: (resp) => {
+                        Notification.notificationSuccess(resp);
+                      },
+                    }
+                  );
+                }}
+              ></Switch>
+              <span
+                className="p-2 cursor-pointer"
+                role="presentation"
+                onClick={() => {
+                  setSelectedPromotion(record);
+                  setIsOpenModal(true);
+                }}
+              >
+                <EditOutlined />
+              </span>
+            </>
+          )}
+          {checkPermission(groupPermission4, [store.getState().user.role]) && (
+            <>
+              <Switch
+                checkedChildren="On"
+                unCheckedChildren="Off"
+                defaultChecked={record.active}
+                loading={avtiveMutation.isLoading}
+                disabled
+              ></Switch>
+            </>
+          )}
+        </>
+      ),
     },
   ];
 

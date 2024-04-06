@@ -26,6 +26,7 @@ export type TROLE = "ROLE_ADMIN" | "ROLE_RECEPTIONIST" | "ROLE_ACCOUNTANT";
 export const groupPermission1: TROLE[] = ["ROLE_ADMIN", "ROLE_RECEPTIONIST"];
 export const groupPermission2: TROLE[] = ["ROLE_ADMIN"];
 export const groupPermission3: TROLE[] = ["ROLE_ADMIN", "ROLE_ACCOUNTANT"];
+export const groupPermission4: TROLE[] = ["ROLE_RECEPTIONIST"];
 
 export function checkPermission(
   groupPermission: TROLE[],
