@@ -22,7 +22,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Col, DatePicker, Descriptions, Row, Space, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { useState } from "react";
 import { checkPermission, groupPermission1 } from "@/lazyLoading";
 import store from "@/redux/store";
@@ -355,6 +355,10 @@ export default function RoomManagement() {
     },
   ];
 
+  const daysDiff = (d1: Moment, d2: Moment) => {
+    return d2.diff(d1, "days");
+  };
+
   return (
     <div className="room-management-page">
       <Row className="mb-5" justify="space-between">
@@ -436,6 +440,14 @@ export default function RoomManagement() {
                         {(record?.price * record?.quantity).toLocaleString()} đ
                       </Descriptions.Item>
 
+                      <Descriptions.Item label="Số ngày ở">
+                        {daysDiff(
+                          moment(record.checkin),
+                          moment(record.checkout)
+                        )}{" "}
+                        ngày
+                      </Descriptions.Item>
+
                       <Descriptions.Item label="Giảm giá">
                         {record?.discount} %
                       </Descriptions.Item>
@@ -443,9 +455,18 @@ export default function RoomManagement() {
                       <Descriptions.Item label="Tổng cộng">
                         <strong>
                           {(
-                            record?.price * record?.quantity -
+                            record?.price *
+                              record?.quantity *
+                              daysDiff(
+                                moment(record.checkin),
+                                moment(record.checkout)
+                              ) -
                             (record?.price *
                               record?.quantity *
+                              daysDiff(
+                                moment(record.checkin),
+                                moment(record.checkout)
+                              ) *
                               record?.discount) /
                               100 +
                             record?.used_services
